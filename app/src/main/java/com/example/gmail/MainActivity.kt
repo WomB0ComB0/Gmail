@@ -1,6 +1,7 @@
 package com.example.gmail
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -27,6 +28,15 @@ class MainActivity : AppCompatActivity() {
         emailsRv.adapter = adapter
         // Set layout manager to position the items
         emailsRv.layoutManager = LinearLayoutManager(this)
+
+        val loadMore = findViewById<Button>(R.id.loadMoreBtn).setOnClickListener {
+            // Fetch next 5 emails
+            val newEmails = EmailFetcher.getNext5Emails()
+            // Add new emails to existing list of emails
+            (emails as MutableList<Email>).addAll(newEmails)
+            // Notify the adapter there's new emails so the RecyclerView layout is updated
+            adapter.notifyDataSetChanged()
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
